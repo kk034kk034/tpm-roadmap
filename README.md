@@ -79,6 +79,8 @@ Every roadmap node also has a generated learning page at:
 
 MDX articles are used for deeper hand-written guides. Generated node pages make sure the full roadmap is readable even before every node has a long-form article.
 
+Learning progress is tracked in the browser with `localStorage`, so V1 does not require login or a backend.
+
 To add a new skill node:
 
 1. Add a node record under the matching branch in `src/data/roadmap.json`.

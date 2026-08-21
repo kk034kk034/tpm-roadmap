@@ -1,71 +1,29 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import RoadmapFlow from '../components/RoadmapFlow';
+import roadmap from '../data/roadmap.json';
+
+const nodeCount = roadmap.branches.reduce((total, branch) => total + branch.nodes.length, 0);
 ---
 
-<BaseLayout title="RD → TPM Roadmap" description="中文 RD 轉 TPM 的互動式技能樹、工作場景與實戰模板。">
-  <main>
-    <section class="border-b border-ink/10 bg-paper">
-      <div class="mx-auto grid max-w-7xl gap-8 px-5 py-10 lg:grid-cols-[0.9fr_1.1fr] lg:px-8 lg:py-14">
-        <div class="flex flex-col justify-center">
-          <p class="mb-4 w-fit rounded-full bg-citron px-3 py-1 text-sm font-bold text-ink">RD → TPM Roadmap</p>
-          <h1 class="max-w-3xl text-4xl font-black leading-tight text-ink md:text-6xl">
-            12 大主幹、100+ 節點，給 RD 轉 TPM 的完整實戰技能樹
-          </h1>
-          <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink/72">
-            這不是照搬通用 PM 課程，而是把 RD 轉 TPM 的工作生命週期拆成角色轉換、售前、啟動、需求、規劃、執行、風險變更、溝通、技術交付、測試上線、驗收結案與 Senior TPM。先用互動 Roadmap 找能力缺口，再逐步補中文文章、Checklist 與模板。
-          </p>
-          <div class="mt-7 flex flex-wrap gap-3">
-            <a class="rounded-lg bg-ink px-5 py-3 text-sm font-bold text-white hover:bg-moss" href="#roadmap">開始看技能樹</a>
-            <a class="rounded-lg border border-ink/20 px-5 py-3 text-sm font-bold text-ink hover:border-moss hover:text-moss" href="/topics/requirement-clarification">先看需求澄清</a>
-          </div>
+<BaseLayout title="RD → TPM Roadmap" description="中文 RD 轉 TPM 的互動式技能樹與學習進度追蹤。">
+  <main class="min-h-screen bg-paper">
+    <header class="border-b border-ink/10 bg-white">
+      <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-4 lg:px-8">
+        <div>
+          <p class="text-sm font-bold text-moss">RD → TPM Roadmap</p>
+          <h1 class="text-2xl font-black leading-tight text-ink md:text-3xl">技能地圖與學習進度</h1>
         </div>
-        <div class="grid content-end gap-3">
-          <div class="rounded-lg border border-ink/15 bg-white p-5 shadow-panel">
-            <p class="text-sm font-bold text-moss">工作模式範例</p>
-            <h2 class="mt-2 text-2xl font-bold text-ink">我現在遇到問題，該補哪個能力？</h2>
-            <div class="mt-5 grid gap-3 sm:grid-cols-2">
-              <div class="rounded-lg bg-paper p-4">
-                <p class="font-bold">客戶突然加需求</p>
-                <p class="mt-2 text-sm text-ink/65">CR、Impact Analysis、Change Control</p>
-              </div>
-              <div class="rounded-lg bg-paper p-4">
-                <p class="font-bold">RD 說做不完</p>
-                <p class="mt-2 text-sm text-ink/65">WBS、Estimation、Dependency、Impact</p>
-              </div>
-              <div class="rounded-lg bg-paper p-4">
-                <p class="font-bold">準備 UAT</p>
-                <p class="mt-2 text-sm text-ink/65">UAT、Bug Triage、Exit Criteria</p>
-              </div>
-              <div class="rounded-lg bg-paper p-4">
-                <p class="font-bold">第一次拜訪客戶</p>
-                <p class="mt-2 text-sm text-ink/65">Discovery、Requirement Interview、Follow-up</p>
-              </div>
-            </div>
-          </div>
+        <div class="flex flex-wrap gap-2 text-sm font-bold">
+          <span class="rounded-full bg-citron px-3 py-1.5 text-ink">{roadmap.branches.length} 大主幹</span>
+          <span class="rounded-full bg-[#eef6ed] px-3 py-1.5 text-moss">{nodeCount} 節點</span>
+          <a class="rounded-full border border-ink/15 px-3 py-1.5 text-ink hover:border-moss hover:text-moss" href="/search">搜尋</a>
         </div>
       </div>
-    </section>
+    </header>
 
-    <section id="roadmap" class="mx-auto max-w-7xl px-5 py-8 lg:px-8">
+    <section id="roadmap" class="mx-auto max-w-7xl px-5 py-5 lg:px-8">
       <RoadmapFlow client:only="react" />
-    </section>
-
-    <section class="border-t border-ink/10 bg-white">
-      <div class="mx-auto grid max-w-7xl gap-6 px-5 py-10 md:grid-cols-3 lg:px-8">
-        <article>
-          <h2 class="text-xl font-bold text-ink">內容和程式分離</h2>
-          <p class="mt-3 leading-relaxed text-ink/70">12 大主幹與節點存在 JSON，深度文章存在 MDX。新增主題不需要重畫圖，只要補資料和文章。</p>
-        </article>
-        <article>
-          <h2 class="text-xl font-bold text-ink">先不要後端</h2>
-          <p class="mt-3 leading-relaxed text-ink/70">V1 專注中文內容、搜尋、手機可讀與 GitHub Pages。進度紀錄等到 V2 再接 Supabase。</p>
-        </article>
-        <article>
-          <h2 class="text-xl font-bold text-ink">學習與工作雙視角</h2>
-          <p class="mt-3 leading-relaxed text-ink/70">不只列技能，也能從實際工作情境反查要補的 TPM 能力。</p>
-        </article>
-      </div>
     </section>
   </main>
 </BaseLayout>

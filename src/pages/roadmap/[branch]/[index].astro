@@ -144,6 +144,14 @@ const adjacent = [
         <p class="text-xs font-bold uppercase tracking-[0.16em] text-ink/50">{branch.title}</p>
         <h2 class="mt-2 text-xl font-bold text-ink">{title}</h2>
         <p class="mt-3 text-sm font-semibold text-moss">{levelLabels[node.l] ?? node.l}</p>
+        <button
+          id="progress-toggle"
+          data-node-id={`${branch.id}:${index}`}
+          class="mt-4 w-full rounded-lg bg-citron px-4 py-2.5 text-sm font-bold text-ink transition hover:bg-moss hover:text-white"
+          type="button"
+        >
+          標記完成
+        </button>
       </div>
     </aside>
 
@@ -153,26 +161,18 @@ const adjacent = [
 
       <h2>為什麼 TPM 要會？</h2>
       <p>{guide.why}</p>
-      <p>
-        放到「{title}」這個節點時，重點是把名詞變成可操作的工作判斷：你要知道它影響哪個承諾、哪個角色、哪個交付物，以及如果沒處理會造成什麼專案風險。
-      </p>
 
       <h2>工作中你會遇到</h2>
       <p>{guide.situation}</p>
-      <p>
-        對 RD 轉 TPM 來說，這個節點不能只停在概念理解。你需要把它放進實際專案語境：客戶怎麼表達、RD 需要什麼輸入、主管會看什麼結果、文件要留下什麼證據。
-      </p>
 
       <h2>TPM 要問的問題</h2>
       <ul>
         {guide.questions.map((item) => <li>{item}</li>)}
-        <li>針對「{title}」，現在最缺的事實、owner 或決策是什麼？</li>
       </ul>
 
       <h2>Checklist</h2>
       <ul>
         {guide.checklist.map((item) => <li>{item}</li>)}
-        <li>能把「{title}」整理成可追蹤、可溝通、可驗收的輸出。</li>
       </ul>
 
       <h2>完成標準</h2>
@@ -182,14 +182,6 @@ const adjacent = [
       <blockquote>
         節點輸出：{guide.output}
       </blockquote>
-
-      <h2>參考脈絡</h2>
-      <p>{guide.source}</p>
-      <ul>
-        <li>PMBOK 8 的 completeness check：Governance、Scope、Schedule、Finance、Stakeholders、Resources、Risk。</li>
-        <li>PMP 2026 的方向：AI、stakeholder engagement、outcomes、value、business impact、leadership / technical / strategic balance。</li>
-        <li>大人學專案管理課程的實作取向：目標限制、需求釐清、WBS、任務拆解、資源成本、工期網圖、要徑、EVM 與專案檢核。</li>
-      </ul>
 
       {node.p && (
         <>
@@ -212,5 +204,36 @@ const adjacent = [
         </>
       )}
     </article>
+    <script is:inline>
+      const button = document.getElementById('progress-toggle');
+      const key = 'rd-tpm-roadmap-progress';
+
+      if (button) {
+        const nodeId = button.dataset.nodeId;
+        const readProgress = () => new Set(JSON.parse(window.localStorage.getItem(key) || '[]'));
+        const writeProgress = (progress) => window.localStorage.setItem(key, JSON.stringify([...progress]));
+        const render = () => {
+          const progress = readProgress();
+          const done = progress.has(nodeId);
+          button.textContent = done ? '已完成，點擊取消' : '標記完成';
+          button.className = done
+            ? 'mt-4 w-full rounded-lg bg-ink px-4 py-2.5 text-sm font-bold text-white transition hover:bg-moss'
+            : 'mt-4 w-full rounded-lg bg-citron px-4 py-2.5 text-sm font-bold text-ink transition hover:bg-moss hover:text-white';
+        };
+
+        button.addEventListener('click', () => {
+          const progress = readProgress();
+          if (progress.has(nodeId)) {
+            progress.delete(nodeId);
+          } else {
+            progress.add(nodeId);
+          }
+          writeProgress(progress);
+          render();
+        });
+
+        render();
+      }
+    </script>
   </main>
 </BaseLayout>

@@ -12,7 +12,7 @@ import {
   type NodeProps
 } from '@xyflow/react';
 import { BookOpen, BriefcaseBusiness, CheckCircle2, ExternalLink, Layers3 } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import roadmap from '../data/roadmap.json';
 
 type Branch = (typeof roadmap.branches)[number];
@@ -28,6 +28,7 @@ type RoadmapNode = {
   summary: string;
   path?: string;
   index: number;
+  completed?: boolean;
 };
 
 const levelStyles: Record<string, string> = {
@@ -59,18 +60,22 @@ const allNodes: RoadmapNode[] = roadmap.branches.flatMap((branch) =>
 
 function TopicNode({ data }: NodeProps<Node<RoadmapNode>>) {
   return (
-    <div className={`w-[214px] rounded-lg border-2 p-3 shadow-sm ${levelStyles[data.level] ?? levelStyles.white}`}>
+    <div
+      className={`w-[214px] rounded-lg border-2 p-3 shadow-sm transition ${
+        data.completed ? 'border-moss bg-moss text-white' : (levelStyles[data.level] ?? levelStyles.white)
+      }`}
+    >
       <Handle type="target" position={Position.Left} className="!bg-ink" />
       <div className="mb-2 flex items-start justify-between gap-2">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-ink/55">
+          <p className={`text-[11px] font-semibold uppercase tracking-[0.08em] ${data.completed ? 'text-white/70' : 'text-ink/55'}`}>
             {data.branchTitle.slice(0, 2)} · {data.level}
           </p>
-          <h3 className="text-[15px] font-bold leading-tight text-ink">{data.title}</h3>
+          <h3 className={`text-[15px] font-bold leading-tight ${data.completed ? 'text-white' : 'text-ink'}`}>{data.title}</h3>
         </div>
-        <CheckCircle2 className="h-4 w-4 shrink-0 text-moss" aria-hidden />
+        <CheckCircle2 className={`h-4 w-4 shrink-0 ${data.completed ? 'text-white' : 'text-moss'}`} aria-hidden />
       </div>
-      <p className="line-clamp-3 text-xs leading-relaxed text-ink/70">{data.summary}</p>
+      <p className={`line-clamp-3 text-xs leading-relaxed ${data.completed ? 'text-white/78' : 'text-ink/70'}`}>{data.summary}</p>
       <Handle type="source" position={Position.Right} className="!bg-ink" />
     </div>
   );
@@ -81,9 +86,41 @@ const nodeTypes = { topic: TopicNode };
 export default function RoadmapFlow() {
   const [selectedId, setSelectedId] = useState('b03-requirement-scope:0');
   const [mode, setMode] = useState<ViewMode>('learning');
+  const [completed, setCompleted] = useState<Set<string>>(new Set());
+  const [progressReady, setProgressReady] = useState(false);
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem('rd-tpm-roadmap-progress');
+    if (saved) {
+      setCompleted(new Set(JSON.parse(saved) as string[]));
+    }
+    setProgressReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (progressReady) {
+      window.localStorage.setItem('rd-tpm-roadmap-progress', JSON.stringify([...completed]));
+    }
+  }, [completed, progressReady]);
 
   const selected = allNodes.find((node) => node.id === selectedId) ?? allNodes[0];
   const selectedBranch = roadmap.branches.find((branch) => branch.id === selected.branchId);
+  const selectedCompleted = completed.has(selected.id);
+  const progressPercent = Math.round((completed.size / allNodes.length) * 100);
+  const selectedBranchIds = selectedBranch?.nodes.map((_, index) => `${selected.branchId}:${index}`) ?? [];
+  const branchDone = selectedBranchIds.filter((id) => completed.has(id)).length;
+
+  const toggleSelected = () => {
+    setCompleted((current) => {
+      const next = new Set(current);
+      if (next.has(selected.id)) {
+        next.delete(selected.id);
+      } else {
+        next.add(selected.id);
+      }
+      return next;
+    });
+  };
 
   const { nodes, edges } = useMemo(() => {
     const branchRows = new Map(roadmap.branches.map((branch, row) => [branch.id, row]));
@@ -91,7 +128,7 @@ export default function RoadmapFlow() {
     const flowNodes: Node<RoadmapNode>[] = allNodes.map((node) => ({
       id: node.id,
       type: 'topic',
-      data: node,
+      data: { ...node, completed: completed.has(node.id) },
       position: {
         x: 40 + node.index * 260,
         y: (branchRows.get(node.branchId) ?? 0) * 190
@@ -116,7 +153,7 @@ export default function RoadmapFlow() {
     );
 
     return { nodes: flowNodes, edges: flowEdges };
-  }, [selectedId]);
+  }, [selectedId, completed]);
 
   const getNode = (ref: string) => allNodes.find((node) => node.id === ref);
 
@@ -142,9 +179,15 @@ export default function RoadmapFlow() {
               工作模式
             </button>
           </div>
-          <p className="text-sm text-ink/60">
-            {roadmap.branches.length} 大主幹 · {allNodes.length} 個節點 · 點節點查看重點
-          </p>
+          <div className="min-w-[220px]">
+            <div className="flex items-center justify-between text-sm font-semibold text-ink/70">
+              <span>{completed.size}/{allNodes.length}</span>
+              <span>{progressPercent}%</span>
+            </div>
+            <div className="mt-1 h-2 overflow-hidden rounded-full bg-ink/10">
+              <div className="h-full rounded-full bg-moss transition-all" style={{ width: `${progressPercent}%` }} />
+            </div>
+          </div>
         </div>
 
         {mode === 'learning' ? (
@@ -195,6 +238,16 @@ export default function RoadmapFlow() {
         <h2 className="mt-2 text-2xl font-bold text-ink">{selected.title}</h2>
         <p className="mt-2 text-sm font-semibold text-ink/55">{selected.branchTitle}</p>
         <p className="mt-3 leading-relaxed text-ink/72">{selected.summary}</p>
+        <button
+          type="button"
+          className={`mt-5 inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-bold transition ${
+            selectedCompleted ? 'bg-ink text-white hover:bg-moss' : 'bg-citron text-ink hover:bg-moss hover:text-white'
+          }`}
+          onClick={toggleSelected}
+        >
+          <CheckCircle2 className="h-4 w-4" aria-hidden />
+          {selectedCompleted ? '已完成，點擊取消' : '標記完成'}
+        </button>
         <dl className="mt-5 grid grid-cols-2 gap-3 text-sm">
           <div className="rounded-lg bg-paper p-3">
             <dt className="font-semibold text-ink/55">難度</dt>
@@ -202,7 +255,7 @@ export default function RoadmapFlow() {
           </div>
           <div className="rounded-lg bg-paper p-3">
             <dt className="font-semibold text-ink/55">主幹</dt>
-            <dd className="mt-1 font-bold text-ink">{selectedBranch?.group ?? 'Roadmap'}</dd>
+            <dd className="mt-1 font-bold text-ink">{branchDone}/{selectedBranchIds.length}</dd>
           </div>
         </dl>
 
