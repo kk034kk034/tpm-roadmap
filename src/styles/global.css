@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background: #f7f4ec;
+    color: #17201c;
+    font-family: Inter, "Noto Sans TC", system-ui, sans-serif;
+  }
+
+  ::selection {
+    background: #d8d86a;
+    color: #17201c;
+  }
+}
+
+@layer components {
+  .roadmap-prose {
+    max-width: 72ch;
+  }
+
+  .roadmap-prose h1,
+  .roadmap-prose h2,
+  .roadmap-prose h3 {
+    color: #17201c;
+    font-weight: 750;
+    letter-spacing: 0;
+  }
+
+  .roadmap-prose h1 {
+    font-size: clamp(2rem, 3vw, 3.25rem);
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+
+  .roadmap-prose h2 {
+    font-size: 1.45rem;
+    margin-top: 2.4rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .roadmap-prose h3 {
+    font-size: 1.08rem;
+    margin-top: 1.6rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .roadmap-prose p,
+  .roadmap-prose li {
+    color: rgba(23, 32, 28, 0.82);
+    line-height: 1.82;
+  }
+
+  .roadmap-prose ul,
+  .roadmap-prose ol {
+    padding-left: 1.25rem;
+  }
+
+  .roadmap-prose blockquote {
+    border-left: 4px solid #2f6f5e;
+    margin: 1.5rem 0;
+    padding: 0.8rem 1.1rem;
+    background: rgba(47, 111, 94, 0.08);
+  }
+}

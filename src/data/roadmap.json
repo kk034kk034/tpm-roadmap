@@ -1,0 +1,107 @@
+{
+  "nodes": [
+    {
+      "id": "rd-to-tpm",
+      "title": "RD 轉 TPM 心法",
+      "level": "foundation",
+      "category": "transition",
+      "summary": "從寫出解法，轉成定義問題、對齊承諾、推進跨部門結果。",
+      "path": "/topics/rd-vs-tpm",
+      "prerequisites": []
+    },
+    {
+      "id": "customer-visit",
+      "title": "第一次客戶拜訪",
+      "level": "beginner",
+      "category": "presales",
+      "summary": "用會前準備、提問框架與會後整理，避免把模糊需求直接丟回 RD。",
+      "path": "/topics/customer-visit",
+      "prerequisites": ["rd-to-tpm"]
+    },
+    {
+      "id": "requirement",
+      "title": "需求澄清",
+      "level": "beginner",
+      "category": "requirement",
+      "summary": "把客戶的一句話拆成目的、使用情境、限制、驗收條件與待確認假設。",
+      "path": "/topics/requirement-clarification",
+      "prerequisites": ["customer-visit"]
+    },
+    {
+      "id": "scope",
+      "title": "Scope 邊界",
+      "level": "beginner",
+      "category": "requirement",
+      "summary": "定義包含、不包含、灰區與決策者，讓承諾可以被管理。",
+      "path": "/topics/scope-boundary",
+      "prerequisites": ["requirement"]
+    },
+    {
+      "id": "wbs",
+      "title": "WBS 工作分解",
+      "level": "beginner",
+      "category": "planning",
+      "summary": "把需求拆成可估、可排、可追的工作包，建立 RD 與 PM 的共同語言。",
+      "path": "/topics/wbs",
+      "prerequisites": ["scope"]
+    },
+    {
+      "id": "risk",
+      "title": "風險管理",
+      "level": "intermediate",
+      "category": "execution",
+      "summary": "提前辨識技術、時程、資源與外部依賴，並設計觸發條件與應對方案。",
+      "path": "/topics/risk-management",
+      "prerequisites": ["wbs"]
+    },
+    {
+      "id": "change-request",
+      "title": "Change Request",
+      "level": "intermediate",
+      "category": "execution",
+      "summary": "客戶加需求時，用影響分析與核准機制守住範疇、時程與成本。",
+      "path": "/topics/change-request",
+      "prerequisites": ["scope", "risk"]
+    },
+    {
+      "id": "uat",
+      "title": "UAT 驗收",
+      "level": "intermediate",
+      "category": "delivery",
+      "summary": "把驗收條件、測試資料、缺陷分級與簽核流程在上線前一次對齊。",
+      "path": "/topics/uat",
+      "prerequisites": ["requirement", "risk"]
+    },
+    {
+      "id": "launch",
+      "title": "上線與驗收",
+      "level": "advanced",
+      "category": "delivery",
+      "summary": "整合 release plan、rollback、stakeholder update 與交付證據。",
+      "path": "/topics/launch-acceptance",
+      "prerequisites": ["uat", "change-request"]
+    }
+  ],
+  "workModes": [
+    {
+      "title": "客戶突然加需求",
+      "description": "先做影響分析，再進入核准與承諾重談。",
+      "nodes": ["change-request", "scope", "risk"]
+    },
+    {
+      "title": "RD 說做不完",
+      "description": "回到 WBS、依賴、風險與取捨，把情緒轉成選項。",
+      "nodes": ["wbs", "risk", "scope"]
+    },
+    {
+      "title": "準備 UAT",
+      "description": "確認驗收條件、測試資料、缺陷分級與簽核節奏。",
+      "nodes": ["uat", "requirement", "launch"]
+    },
+    {
+      "title": "第一次拜訪客戶",
+      "description": "用問題清單建立上下文，不急著承諾解法。",
+      "nodes": ["customer-visit", "requirement", "rd-to-tpm"]
+    }
+  ]
+}
