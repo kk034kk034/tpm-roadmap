@@ -71,11 +71,19 @@ Roadmap branches and nodes are maintained in `src/data/roadmap.json`.
 
 Topic articles are maintained as MDX files in `src/content/topics`.
 
+Every roadmap node also has a generated learning page at:
+
+```text
+/roadmap/<branch-id>/<node-index>
+```
+
+MDX articles are used for deeper hand-written guides. Generated node pages make sure the full roadmap is readable even before every node has a long-form article.
+
 To add a new skill node:
 
 1. Add a node record under the matching branch in `src/data/roadmap.json`.
-2. Add the corresponding MDX article in `src/content/topics`.
-3. Set the node `path` to `/topics/<slug>`.
+2. Optionally add a deeper MDX article in `src/content/topics`.
+3. If a deep article exists, set the node `p` to `/topics/<slug>`.
 
 ## Commit Convention
 

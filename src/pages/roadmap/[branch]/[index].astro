@@ -1,0 +1,216 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import roadmap from '../../../data/roadmap.json';
+
+type Branch = (typeof roadmap.branches)[number];
+type Topic = Branch['nodes'][number];
+
+const guides: Record<string, {
+  why: string;
+  situation: string;
+  questions: string[];
+  checklist: string[];
+  output: string;
+  source: string;
+}> = {
+  'b00-transition': {
+    why: 'RD 轉 TPM 最大的變化，不是工具不同，而是責任邊界不同。你不只要把自己的任務完成，還要讓問題被定義、承諾被追蹤、跨部門依賴被看見。',
+    situation: '你會遇到需求不清、決策者不明、RD 等 spec、客戶期待不一致，或大家都知道有問題但沒有人推動下一步的情境。',
+    questions: ['這件事真正要解決的問題是什麼？', '誰需要做決策？', '現在缺哪一個資訊或承諾？', '如果我不推動，專案會卡在哪裡？'],
+    checklist: ['能說清楚 RD 與 TPM 的責任差異', '能把問題整理成 owner、選項、風險與下一步', '能主動追資訊，而不是等待完整 spec', '能用專案最佳解思考取捨'],
+    output: '一段清楚的問題定義，加上一份可追蹤的 action / decision / risk 清單。',
+    source: '這一支線補足 PMBOK 較少針對 RD 轉職情境說明的部分，並對齊 PMP 對 leadership、decision-making、business impact 的重視。'
+  },
+  'b01-presales': {
+    why: '售前階段的承諾會決定後面專案是否痛苦。TPM 需要在需求仍模糊時辨識範疇、假設、技術可行性、成本與合約風險。',
+    situation: '常見情境包括第一次拜訪客戶、解讀 RFP、估工估時、準備 proposal、評選簡報、議價與售前交接。',
+    questions: ['客戶真正的 business goal 是什麼？', '哪些是已承諾，哪些只是初步假設？', '技術可行性有哪些未知？', '合約或 SLA 會把風險放在哪一方？'],
+    checklist: ['能整理 discovery questions', '能讀出 RFP 的需求與風險', '能列出 assumption / constraint', '能把售前承諾完整 handover 給執行團隊'],
+    output: '售前風險清單、初估範疇、假設限制表、proposal 輸入與 presales handover package。',
+    source: '這段參考實務課程強調的目標、限制、範疇與 PM Big Table 思路，也補足一般 Product Manager roadmap 較少覆蓋的售前場景。'
+  },
+  'b02-initiation': {
+    why: '專案啟動決定後續治理品質。TPM 必須確認案子為什麼存在、誰能決策、成功標準是什麼，以及文件與溝通節奏如何運作。',
+    situation: '你可能被突然指派接案，卻只拿到零散文件、口頭承諾或不完整的合約背景。',
+    questions: ['這個案子的目標和成功標準是什麼？', '有哪些交付物與高層範疇？', '誰是決策者與 sponsor？', '文件、版本、會議與升級流程放在哪裡？'],
+    checklist: ['拿到合約、SOW、proposal、風險與假設', '建立 stakeholder register 與 RACI', '確認 decision authority', '完成 kickoff 並建立 repository'],
+    output: 'Project charter、stakeholder register、RACI、governance plan、kickoff minutes 與文件庫。',
+    source: '對齊 PMBOK governance、stakeholders、scope 等 performance domains。'
+  },
+  'b03-requirement-scope': {
+    why: '需求與範疇是 RD 轉 TPM 最核心的能力。TPM 不能把「我要一個功能」直接丟給 RD，而要拆出目的、流程、限制、驗收與變更邊界。',
+    situation: '客戶用一句話描述功能、內部對需求理解不同、驗收標準不清楚，或 scope 灰區逐漸擴大。',
+    questions: ['Why / Who / When / Current Flow 是什麼？', 'As-Is 和 To-Be 差在哪裡？', '什麼算完成？', '哪些明確 out of scope？'],
+    checklist: ['能完成 requirement interview', '能定義 functional / non-functional requirement', '能寫 acceptance criteria', '能建立 baseline 與 out-of-scope'],
+    output: '需求訪談紀錄、As-Is / To-Be、需求清單、驗收條件、scope boundary 與 requirement baseline。',
+    source: '對齊 PMBOK scope domain，並吸收實務課程中用 WBS 和交付物釐清範疇的精神。'
+  },
+  'b04-planning': {
+    why: '規劃把需求變成可執行的專案。TPM 要能把交付物拆成 WBS、work package、task、resource、dependency、schedule 與 baseline。',
+    situation: 'RD 需要估工、主管要時程、客戶要里程碑，但需求還沒有轉成可排程結構。',
+    questions: ['交付物是什麼？', '工作包是否可驗收？', 'task、effort、duration 是否被混在一起？', 'critical path 和 float 在哪裡？'],
+    checklist: ['能建立 WBS', '能分辨 work package 與 task', '能做 effort / duration 估算', '能建立 dependency、milestone、schedule baseline'],
+    output: 'WBS、task list、resource plan、schedule network、Gantt、baseline 與預算輸入。',
+    source: '大人學 101 專案管理一日特訓班公開大綱明確涵蓋 WBS、任務拆解、資源成本、工期網圖、要徑與 EVM，這一支線以這些實作能力為核心。'
+  },
+  'b05-execution-control': {
+    why: '執行與追蹤是 TPM 每天的工作。重點不是問大家正常嗎，而是用 evidence 判斷進度、依賴、阻塞、風險與里程碑是否可信。',
+    situation: '專案會議大家都說正常，但 action item 沒 owner、客戶資料未給、RD 被其他案子卡住、milestone 看似還沒爆但已經失真。',
+    questions: ['誰正在等誰？', '哪個 blocker 沒有 owner？', '實際進度和 baseline 差多少？', '下一個 milestone 還守得住嗎？'],
+    checklist: ['每個 action item 有 owner 與 due date', 'dependency 有追蹤', 'status report 有事實與趨勢', '能用 forecast 提前預警'],
+    output: 'Action tracker、weekly report、status dashboard、milestone review、forecast 與 project audit notes。',
+    source: '對齊 PMBOK schedule、resources、finance、risk domains，也呼應大人學課程強調的進度解讀、成本與 EVM。'
+  },
+  'b06-risk-issue-change': {
+    why: '風險、議題與變更決定專案是否失控。TPM 要分清楚還沒發生的是 risk，已發生的是 issue，新增承諾則必須走 change control。',
+    situation: '客戶說順便多做、外部 API 延遲、測試資料不到位、里程碑偏離、或問題需要主管決策。',
+    questions: ['這是 risk、issue 還是 change？', 'trigger 是什麼？', 'impact 是 scope、time、cost、resource 還是 risk？', '誰能核准變更？'],
+    checklist: ['建立 risk register / RAID log', '每個風險有 owner、trigger、mitigation', 'issue 有 resolution path', 'CR 有 impact analysis 與 approval'],
+    output: 'Risk register、RAID log、issue log、impact analysis、change request 與 recovery plan。',
+    source: 'PMBOK 8 將 risk 列為 performance domain；PMP 2026 也更重視 business environment、governance 與 real-world decision-making。'
+  },
+  'b07-stakeholder-communication': {
+    why: 'TPM 的工作大量依賴人與溝通。沒有 authority 時，你仍需要推動客戶、Sales、SA、RD、QA、Infra、Vendor 與主管對齊。',
+    situation: '客戶期待過高、RD 不願承諾、Sales 已經答應、主管要結論、會議很多但沒有決策。',
+    questions: ['誰是 sponsor、decision maker、influencer？', '這場會要決策、同步還是解決衝突？', '我要如何說 delay 或拒絕？', '會後 action 是否可追蹤？'],
+    checklist: ['完成 stakeholder mapping', '能設計 agenda 與 attendees', '會議有 decision / MOM / action item', '能處理 difficult conversation'],
+    output: 'Stakeholder map、communication plan、agenda、MOM、decision log、follow-up tracker。',
+    source: '對齊 PMI 對 stakeholder engagement、leadership 與 people domain 的要求。'
+  },
+  'b08-technical-delivery': {
+    why: 'Technical TPM 不需要取代工程師，但必須懂到能管理技術交付風險。重點是會問 PM question，而不是自己實作所有技術。',
+    situation: 'API spec 未定、環境不一致、資料 migration 風險、security review 卡住、CI/CD 或 observability 不完整。',
+    questions: ['spec 確認了嗎？', 'auth、error handling、timeout、versioning 怎麼處理？', '環境與資料是否一致？', '上線後如何監控與回復？'],
+    checklist: ['能理解 software lifecycle', '能問出 architecture / API / DB / cloud / security 風險', '能追 integration 與 environment', '能把 technical debt 轉成專案風險'],
+    output: 'Technical risk list、API readiness checklist、environment matrix、integration plan、release technical checklist。',
+    source: '這支線補足一般 PM 課程較少處理的技術管理深度，對齊現代 PMP 對 leadership、technical、strategic skills 的平衡要求。'
+  },
+  'b09-qa-release': {
+    why: '測試與上線不是最後才開始。TPM 要讓驗收條件、測試策略、缺陷分級、release readiness、rollback 與 Go/No-Go 提前對齊。',
+    situation: '開發完成但測試資料不足、UAT 缺陷爭議、bug priority 不一致、上線窗口有限、rollback 沒有演練。',
+    questions: ['測試策略覆蓋哪些風險？', 'exit criteria 是什麼？', '哪些 bug 阻擋 release？', 'Go/No-Go 由誰決定？'],
+    checklist: ['有 test strategy 與 test case', '完成 SIT / integration / UAT 安排', 'defect severity / priority 對齊', 'release plan、rollback、verification 已準備'],
+    output: 'Test plan、UAT plan、bug triage log、release plan、rollback plan、Go/No-Go record。',
+    source: '對齊 PMBOK scope、schedule、risk 與 governance 觀點，把交付品質和上線決策放進專案管理流程。'
+  },
+  'b10-acceptance-closure': {
+    why: '上線不是結束。TPM 要完成穩定期、文件、訓練、正式驗收、保固、維運交接、lessons learned 與結案。',
+    situation: '系統已上線但客戶未簽收、文件不完整、維運不知道接什麼、缺失清單沒有 owner、保固範圍不清。',
+    questions: ['正式驗收證據是什麼？', '還有哪些 punch list？', '文件與訓練是否足以交接？', '維護與 SLA 責任是否清楚？'],
+    checklist: ['交付物清單完整', '取得 formal acceptance', '完成 operation / maintenance manual', '完成 handover、lessons learned、closure'],
+    output: 'Acceptance package、punch list、training record、operation manual、handover record、closure report。',
+    source: '對齊 PMBOK governance、scope、stakeholders 與 risk，確保專案價值被正式收斂。'
+  },
+  'b11-senior-program': {
+    why: 'Senior TPM 從單一專案走向 program / portfolio，需要管理跨專案依賴、資源衝突、治理、策略對齊、business value 與高階溝通。',
+    situation: '多個專案搶同一組 RD、單案最佳解傷害整體目標、主管需要 business impact，而不是 task report。',
+    questions: ['哪些依賴跨專案？', '資源衝突如何取捨？', '這組專案支援哪個策略目標？', '高階主管需要做什麼決策？'],
+    checklist: ['能管理 cross-project dependency', '能處理 resource conflict', '能做 executive communication', '能用 value / business impact 評估交付'],
+    output: 'Program roadmap、dependency map、resource conflict log、executive brief、portfolio recommendation。',
+    source: 'PMP 2026 提高 business environment 比重，並更重視 outcomes、value、business impact；這支線對齊該方向。'
+  }
+};
+
+export function getStaticPaths() {
+  return roadmap.branches.flatMap((branch) =>
+    branch.nodes.map((node, index) => ({
+      params: { branch: branch.id, index: String(index) },
+      props: { branch, node, index }
+    }))
+  );
+}
+
+const { branch, node, index } = Astro.props as { branch: Branch; node: Topic; index: number };
+const guide = guides[branch.id];
+const title = node.t;
+const levelLabels: Record<string, string> = {
+  green: 'RD 剛轉 TPM 必修',
+  yellow: '能獨立帶案',
+  red: 'Senior TPM',
+  white: '特殊領域'
+};
+
+const adjacent = [
+  branch.nodes[index - 1] ? { node: branch.nodes[index - 1], href: `/roadmap/${branch.id}/${index - 1}` } : null,
+  branch.nodes[index + 1] ? { node: branch.nodes[index + 1], href: `/roadmap/${branch.id}/${index + 1}` } : null
+].filter(Boolean) as { node: Topic; href: string }[];
+---
+
+<BaseLayout title={`${title}｜RD → TPM Roadmap`} description={node.s}>
+  <main class="mx-auto grid max-w-7xl gap-8 px-5 py-10 lg:grid-cols-[260px_1fr] lg:px-8">
+    <aside class="lg:sticky lg:top-6 lg:h-fit">
+      <a class="text-sm font-bold text-moss" href="/">← 回 Roadmap</a>
+      <div class="mt-6 rounded-lg border border-ink/12 bg-white p-4">
+        <p class="text-xs font-bold uppercase tracking-[0.16em] text-ink/50">{branch.title}</p>
+        <h2 class="mt-2 text-xl font-bold text-ink">{title}</h2>
+        <p class="mt-3 text-sm font-semibold text-moss">{levelLabels[node.l] ?? node.l}</p>
+      </div>
+    </aside>
+
+    <article class="roadmap-prose rounded-lg border border-ink/12 bg-white px-5 py-7 shadow-panel md:px-9 md:py-10" data-pagefind-body>
+      <h1>{title}</h1>
+      <p>{node.s}</p>
+
+      <h2>為什麼 TPM 要會？</h2>
+      <p>{guide.why}</p>
+      <p>
+        放到「{title}」這個節點時，重點是把名詞變成可操作的工作判斷：你要知道它影響哪個承諾、哪個角色、哪個交付物，以及如果沒處理會造成什麼專案風險。
+      </p>
+
+      <h2>工作中你會遇到</h2>
+      <p>{guide.situation}</p>
+      <p>
+        對 RD 轉 TPM 來說，這個節點不能只停在概念理解。你需要把它放進實際專案語境：客戶怎麼表達、RD 需要什麼輸入、主管會看什麼結果、文件要留下什麼證據。
+      </p>
+
+      <h2>TPM 要問的問題</h2>
+      <ul>
+        {guide.questions.map((item) => <li>{item}</li>)}
+        <li>針對「{title}」，現在最缺的事實、owner 或決策是什麼？</li>
+      </ul>
+
+      <h2>Checklist</h2>
+      <ul>
+        {guide.checklist.map((item) => <li>{item}</li>)}
+        <li>能把「{title}」整理成可追蹤、可溝通、可驗收的輸出。</li>
+      </ul>
+
+      <h2>完成標準</h2>
+      <p>
+        不是「我讀過 {title}」，而是：給你一個真實專案，你能說明這個節點如何影響 scope、schedule、cost、risk、stakeholder 或 technical delivery，並產出一份能讓團隊採取行動的工作成果。
+      </p>
+      <blockquote>
+        節點輸出：{guide.output}
+      </blockquote>
+
+      <h2>參考脈絡</h2>
+      <p>{guide.source}</p>
+      <ul>
+        <li>PMBOK 8 的 completeness check：Governance、Scope、Schedule、Finance、Stakeholders、Resources、Risk。</li>
+        <li>PMP 2026 的方向：AI、stakeholder engagement、outcomes、value、business impact、leadership / technical / strategic balance。</li>
+        <li>大人學專案管理課程的實作取向：目標限制、需求釐清、WBS、任務拆解、資源成本、工期網圖、要徑、EVM 與專案檢核。</li>
+      </ul>
+
+      {node.p && (
+        <>
+          <h2>延伸深讀</h2>
+          <p>
+            這個節點已有較完整的專題文章：
+            <a class="font-bold text-moss" href={node.p}>前往深度文章</a>
+          </p>
+        </>
+      )}
+
+      {adjacent.length > 0 && (
+        <>
+          <h2>相鄰節點</h2>
+          <ul>
+            {adjacent.map((item) => (
+              <li><a class="font-bold text-moss" href={item.href}>{item.node.t}</a></li>
+            ))}
+          </ul>
+        </>
+      )}
+    </article>
+  </main>
+</BaseLayout>

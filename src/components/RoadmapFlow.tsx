@@ -52,7 +52,7 @@ const allNodes: RoadmapNode[] = roadmap.branches.flatMap((branch) =>
     branchId: branch.id,
     branchTitle: branch.title,
     summary: node.s,
-    path: node.p,
+    path: node.p ?? `/roadmap/${branch.id}/${index}`,
     index
   }))
 );
@@ -240,19 +240,13 @@ export default function RoadmapFlow() {
           </div>
         </div>
 
-        {selected.path ? (
-          <a
-            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-moss px-4 py-3 text-sm font-bold text-white transition hover:bg-ink"
-            href={selected.path}
-          >
-            深入學習
-            <ExternalLink className="h-4 w-4" aria-hidden />
-          </a>
-        ) : (
-          <p className="mt-6 rounded-lg border border-ink/10 bg-paper px-4 py-3 text-sm font-semibold text-ink/65">
-            這個節點已列入 roadmap，深度文章尚未建立。
-          </p>
-        )}
+        <a
+          className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-moss px-4 py-3 text-sm font-bold text-white transition hover:bg-ink"
+          href={selected.path}
+        >
+          深入學習
+          <ExternalLink className="h-4 w-4" aria-hidden />
+        </a>
       </aside>
     </section>
   );
