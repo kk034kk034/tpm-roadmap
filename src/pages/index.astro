@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import RoadmapFlow from '../components/RoadmapFlow';
 import roadmap from '../data/roadmap.json';
+import { sitePath } from '../lib/paths';
 
 const nodeCount = roadmap.branches.reduce((total, branch) => total + branch.nodes.length, 0);
 ---
@@ -17,7 +18,7 @@ const nodeCount = roadmap.branches.reduce((total, branch) => total + branch.node
         <div class="flex flex-wrap gap-2 text-sm font-bold">
           <span class="rounded-full bg-citron px-3 py-1.5 text-ink">{roadmap.branches.length} 大主幹</span>
           <span class="rounded-full bg-[#eef6ed] px-3 py-1.5 text-moss">{nodeCount} 節點</span>
-          <a class="rounded-full border border-ink/15 px-3 py-1.5 text-ink hover:border-moss hover:text-moss" href="/search">搜尋</a>
+          <a class="rounded-full border border-ink/15 px-3 py-1.5 text-ink hover:border-moss hover:text-moss" href={sitePath('search')}>搜尋</a>
         </div>
       </div>
     </header>

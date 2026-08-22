@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import roadmap from '../data/roadmap.json';
+import { sitePath } from '../lib/paths';
 
 type Branch = (typeof roadmap.branches)[number];
 type SourceNode = Branch['nodes'][number];
@@ -75,7 +76,7 @@ const allNodes: RoadmapNode[] = roadmap.branches.flatMap((branch) =>
     branchId: branch.id,
     branchTitle: branch.title,
     summary: node.s,
-    path: node.p ?? `/roadmap/${branch.id}/${index}`,
+    path: sitePath(node.p ?? `roadmap/${branch.id}/${index}`),
     index
   }))
 );

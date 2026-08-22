@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import roadmap from '../../../data/roadmap.json';
+import { sitePath } from '../../../lib/paths';
 
 type Branch = (typeof roadmap.branches)[number];
 type Topic = Branch['nodes'][number];
@@ -131,15 +132,15 @@ const levelLabels: Record<string, string> = {
 };
 
 const adjacent = [
-  branch.nodes[index - 1] ? { node: branch.nodes[index - 1], href: `/roadmap/${branch.id}/${index - 1}` } : null,
-  branch.nodes[index + 1] ? { node: branch.nodes[index + 1], href: `/roadmap/${branch.id}/${index + 1}` } : null
+  branch.nodes[index - 1] ? { node: branch.nodes[index - 1], href: sitePath(`roadmap/${branch.id}/${index - 1}`) } : null,
+  branch.nodes[index + 1] ? { node: branch.nodes[index + 1], href: sitePath(`roadmap/${branch.id}/${index + 1}`) } : null
 ].filter(Boolean) as { node: Topic; href: string }[];
 ---
 
 <BaseLayout title={`${title}｜RD → TPM Roadmap`} description={node.s}>
   <main class="mx-auto grid max-w-7xl gap-8 px-5 py-10 lg:grid-cols-[260px_1fr] lg:px-8">
     <aside class="lg:sticky lg:top-6 lg:h-fit">
-      <a class="text-sm font-bold text-moss" href="/">← 回 Roadmap</a>
+      <a class="text-sm font-bold text-moss" href={sitePath()}>← 回 Roadmap</a>
       <div class="mt-6 rounded-lg border border-ink/12 bg-white p-4">
         <p class="text-xs font-bold uppercase tracking-[0.16em] text-ink/50">{branch.title}</p>
         <h2 class="mt-2 text-xl font-bold text-ink">{title}</h2>
@@ -188,7 +189,7 @@ const adjacent = [
           <h2>延伸深讀</h2>
           <p>
             這個節點已有較完整的專題文章：
-            <a class="font-bold text-moss" href={node.p}>前往深度文章</a>
+            <a class="font-bold text-moss" href={sitePath(node.p)}>前往深度文章</a>
           </p>
         </>
       )}
