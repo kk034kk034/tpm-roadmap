@@ -1,100 +1,46 @@
-# RD to TPM Roadmap
+# RD → TPM Roadmap
 
-中文 RD 轉 TPM 的互動式學習 Roadmap。目標不是照搬通用 PM 課程，而是從 RD 轉 TPM 的工作生命週期建立 12 大主幹與 100+ 技能節點，讓使用者可以用「學習模式」循序補能力，也可以用「工作模式」從實際情境反查該看的節點。
+中文 RD 轉 TPM 技能地圖，加上一則可玩的系統建置案情境模擬。
 
-## Roadmap Scope
+## 內容
 
-目前 V0.1 包含 12 大主幹：
+- **技能地圖**：12 大主幹（角色轉換 → … → Senior / Program），資料在 `src/data/roadmap.json`；長文在 `src/content/topics`（MDX）。
+- **情境模擬**（`/play`）：一案跑完地圖常見工作場景——拜訪、接案、需求、估算、假綠燈、變更、UAT、上線。
 
-1. RD → TPM 角色轉換
-2. 售前 / Presales
-3. 專案啟動 / Initiation
-4. 需求與範疇 / Requirement & Scope
-5. 規劃 / Planning
-6. 執行與追蹤 / Execution & Control
-7. 風險、議題、變更 / Risk Issue Change
-8. 人與溝通 / Stakeholder & Communication
-9. 軟體與技術交付 / Technical Delivery
-10. 測試、上線 / QA Release
-11. 驗收、維運、結案 / Acceptance & Closure
-12. Senior TPM / Program Management
-
-另外保留 SI / 政府標案作為 optional specialization，AI for TPM 作為橫跨整張 roadmap 的 workflow。
-
-## Tech Stack
-
-- Astro
-- React
-- React Flow / XYFlow
-- Tailwind CSS
-- TypeScript
-- MDX
-- Pagefind
-
-## Project Structure
-
-```text
-src/
-├─ components/
-│  └─ RoadmapFlow.tsx
-├─ content/
-│  └─ topics/
-├─ data/
-│  └─ roadmap.json
-├─ layouts/
-└─ pages/
-```
-
-## Development
-
-Install dependencies:
+## 本機
 
 ```bash
 npm install
-```
-
-Start the local dev server:
-
-```bash
+npm run build:play   # 建置模擬 → public/sims/system-build/
 npm run dev
 ```
 
-Build the static site and Pagefind index:
+- 地圖：http://localhost:4321/tpm-roadmap/
+- 模擬：http://localhost:4321/tpm-roadmap/play/（會進入系統建置案）
 
 ```bash
-npm run build
+npm run build        # build:play + Astro + pagefind
 ```
 
-## Content Model
-
-Roadmap branches and nodes are maintained in `src/data/roadmap.json`.
-
-Topic articles are maintained as MDX files in `src/content/topics`.
-
-Every roadmap node also has a generated learning page at:
+## 目錄
 
 ```text
-/roadmap/<branch-id>/<node-index>
+src/                         地圖站（Astro + React）
+play-games/system-build/     系統建置案劇情（meta / game / data / office / story）
+scripts/build-play.mjs       建置 fab24hr 關卡 → public/sims/
 ```
 
-MDX articles are used for deeper hand-written guides. Generated node pages make sure the full roadmap is readable even before every node has a long-form article.
+引擎建置時下載到 `.cache/fab24hr-engine`（不進 git）。`public/` 為產物，亦不進 git。
 
-Learning progress is tracked in the browser with `localStorage`, so V1 does not require login or a backend.
+## 授權注意
 
-To add a new skill node:
+情境模擬使用 [fab24hr engine](https://github.com/mcltyl/fab24hr-engine)（非商業；須保留畫面上的 Powered by / 贊助 fab24hr）。遊戲作者自願贊助用 `HOME.support`。
 
-1. Add a node record under the matching branch in `src/data/roadmap.json`.
-2. Optionally add a deeper MDX article in `src/content/topics`.
-3. If a deep article exists, set the node `p` to `/topics/<slug>`.
-
-## Commit Convention
-
-Use conventional commit style:
+## Commit
 
 ```text
-init: initialize project
-feat: add roadmap interaction
-fix: correct topic routing
-docs: update readme
-chore: update dependencies
+feat: …
+fix: …
+docs: …
+chore: …
 ```

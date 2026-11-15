@@ -347,5 +347,18 @@
     "RFP Analysis",
     "Project Knowledge Base",
     "Decision Support"
+  ],
+  "products": [
+    {
+      "id": "cloakly",
+      "name": "Cloakly 專案會議助手",
+      "pitch": "會議中逐字稿、筆記與回答建議；會後整理摘要、決議與待辦。",
+      "fit": ["會議", "MOM", "逐字稿", "專案知識庫", "回答建議"],
+      "links": {
+        "android": "https://play.google.com/store/apps/details?id=com.cloud52.cloakly",
+        "ios": "https://apps.apple.com/tw/app/cloakly/id6814856725",
+        "web": "https://kk034kk034.github.io/cloakly/"
+      }
+    }
   ]
 }

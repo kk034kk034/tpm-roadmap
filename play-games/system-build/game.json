@@ -1,0 +1,8 @@
+{
+  "key": "systembuild",
+  "title": "系統建置案",
+  "description": "跟著一般系統建置案走完一輪：售前拜訪 → 接案交接 → 需求澄清 → 估算 → 進度真相 → 變更 → UAT → 上線決策。",
+  "lang": "zh-Hant",
+  "src": ["data.js", "office.js", "story.js"],
+  "css": "game.css"
+}

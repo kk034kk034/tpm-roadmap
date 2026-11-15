@@ -1,0 +1,4 @@
+/* TPM 的一天：偏辦公室冷綠，不是咖啡店暖色。 */
+:root{--brand:#2f6f5e;--brand-edge:#1f4d41;--accent:#d8d86a;--accent-edge:#a8a83f;--accent-tint:#eef6ed}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--brand:#4fa890;--brand-edge:#7fd0b8;--accent:#d8d86a;--accent-edge:#f0f09a;--accent-tint:#1c2a24}}
+:root[data-theme="dark"]{--brand:#4fa890;--brand-edge:#7fd0b8;--accent:#d8d86a;--accent-edge:#f0f09a;--accent-tint:#1c2a24}

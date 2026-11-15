@@ -4,7 +4,7 @@ import RoadmapFlow from '../components/RoadmapFlow';
 import roadmap from '../data/roadmap.json';
 import { sitePath } from '../lib/paths';
 
-const nodeCount = roadmap.branches.reduce((total, branch) => total + branch.nodes.length, 0);
+const cloakly = roadmap.products?.find((product) => product.id === 'cloakly');
 ---
 
 <BaseLayout title="RD → TPM Roadmap" description="中文 RD 轉 TPM 的互動式技能樹與學習進度追蹤。">
@@ -16,8 +16,7 @@ const nodeCount = roadmap.branches.reduce((total, branch) => total + branch.node
           <h1 class="text-2xl font-black leading-tight text-ink md:text-3xl">技能地圖與學習進度</h1>
         </div>
         <div class="flex flex-wrap gap-2 text-sm font-bold">
-          <span class="rounded-full bg-citron px-3 py-1.5 text-ink">{roadmap.branches.length} 大主幹</span>
-          <span class="rounded-full bg-[#eef6ed] px-3 py-1.5 text-moss">{nodeCount} 節點</span>
+          <a class="rounded-full bg-ink px-3 py-1.5 text-paper hover:bg-moss" href={sitePath('play')}>玩情境模擬</a>
           <a class="rounded-full border border-ink/15 px-3 py-1.5 text-ink hover:border-moss hover:text-moss" href={sitePath('search')}>搜尋</a>
         </div>
       </div>
@@ -26,5 +25,21 @@ const nodeCount = roadmap.branches.reduce((total, branch) => total + branch.node
     <section id="roadmap" class="mx-auto max-w-7xl px-5 py-5 lg:px-8">
       <RoadmapFlow client:only="react" />
     </section>
+
+    {cloakly && (
+      <footer class="border-t border-ink/10 bg-white">
+        <div class="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-5 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+          <div>
+            <p class="text-sm font-black text-ink">{cloakly.name}</p>
+            <p class="mt-1 text-sm text-ink/65">{cloakly.pitch}</p>
+          </div>
+          <div class="flex flex-wrap gap-2 text-sm font-bold">
+            <a class="rounded-full bg-ink px-3 py-1.5 text-paper hover:bg-moss" href={cloakly.links.ios} target="_blank" rel="noreferrer">App Store</a>
+            <a class="rounded-full bg-ink px-3 py-1.5 text-paper hover:bg-moss" href={cloakly.links.android} target="_blank" rel="noreferrer">Google Play</a>
+            <a class="rounded-full border border-ink/15 px-3 py-1.5 text-ink hover:border-moss hover:text-moss" href={cloakly.links.web} target="_blank" rel="noreferrer">介紹頁</a>
+          </div>
+        </div>
+      </footer>
+    )}
   </main>
 </BaseLayout>

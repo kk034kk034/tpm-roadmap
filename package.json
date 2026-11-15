@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev --host 0.0.0.0",
-    "build": "astro build && pagefind --site dist",
+    "build": "npm run build:play && astro build && pagefind --site dist",
+    "build:play": "node scripts/build-play.mjs",
+    "dev:play": "npm run build:play && npm --prefix .cache/fab24hr-engine run dev",
     "preview": "astro preview --host 0.0.0.0"
   },
   "dependencies": {

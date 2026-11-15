@@ -1,0 +1,17 @@
+{
+  "id": "system-build",
+  "title": "系統建置案",
+  "subtitle": "從第一次拜訪到上線 Go／No-Go",
+  "hook": "一案跑完學習地圖常見場景：拜訪、接案、需求、估算、假綠燈、變更、UAT、上線。",
+  "duration": "約 12–15 分鐘",
+  "roadmapRefs": [
+    { "label": "第一次拜訪客戶", "path": "roadmap/b01-presales/1" },
+    { "label": "突然叫你接一個案子", "path": "roadmap/b02-initiation/1" },
+    { "label": "客戶說我要一個功能", "path": "roadmap/b03-requirement-scope/0" },
+    { "label": "RD 說做不完", "path": "roadmap/b04-planning/1" },
+    { "label": "看起來正常但不放心", "path": "roadmap/b05-execution-control/6" },
+    { "label": "客戶突然加需求", "path": "roadmap/b06-risk-issue-change/10" },
+    { "label": "準備 UAT", "path": "roadmap/b09-qa-release/6" },
+    { "label": "準備上線", "path": "roadmap/b09-qa-release/11" }
+  ]
+}

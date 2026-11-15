@@ -545,6 +545,29 @@ export default function RoadmapFlow() {
             </div>
             <p className="mt-2 text-sm font-bold text-ink/52">{selectedNode.branchTitle}</p>
             <p className="mt-4 leading-relaxed text-ink/72">{selectedNode.summary}</p>
+            {(() => {
+              const cloakly = roadmap.products?.find((product) => product.id === 'cloakly');
+              const meetingNode = /會議|MOM|Agenda|Facilitation|逐字稿|Kickoff|週報|Status Report/.test(
+                `${selectedNode.title} ${selectedNode.summary} ${selectedNode.branchTitle}`
+              );
+              if (!cloakly || !meetingNode) return null;
+              return (
+                <div className="mt-5 rounded-lg border border-moss/25 bg-[#eef6ed] p-4">
+                  <p className="text-sm font-black text-moss">實戰工具</p>
+                  <p className="mt-1 text-sm leading-relaxed text-ink/75">
+                    這類會議／紀錄場景，可用 {cloakly.name} 邊開邊記、會後整理 MOM。
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2 text-xs font-bold">
+                    <a className="rounded-full bg-ink px-3 py-1.5 text-paper hover:bg-moss" href={cloakly.links.ios} target="_blank" rel="noreferrer">
+                      App Store
+                    </a>
+                    <a className="rounded-full bg-ink px-3 py-1.5 text-paper hover:bg-moss" href={cloakly.links.android} target="_blank" rel="noreferrer">
+                      Google Play
+                    </a>
+                  </div>
+                </div>
+              );
+            })()}
             <div className="mt-5 rounded-lg bg-paper p-4">
               <p className="text-sm font-black text-ink">所在階段</p>
               <p className="mt-1 text-sm leading-relaxed text-ink/68">{selectedStage.title} · {selectedStage.goal}</p>
